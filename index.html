@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sombra 0 Costo</title>
+    <!-- Google Fonts: Roboto & Google Sans (using Product Sans as equivalent) -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Product+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Google Material Symbols Rounded -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app-container">
+        <!-- SECCIÓN 1: HEADER -->
+        <section id="header" class="section fade-in">
+            <div class="logo-container">
+                <span class="material-symbols-rounded logo-icon">satellite_alt</span>
+                <span class="material-symbols-rounded logo-icon main-icon">forest</span>
+            </div>
+            <h1 class="app-title">SOMBRA 0 COSTO</h1>
+            <h2 class="app-subtitle">Sistema Inteligente para el Manejo de Sombra del Cafetal</h2>
+            
+            <div class="card welcome-card">
+                <p>Evalúe el régimen de sombra de su cafetal mediante Inteligencia Artificial y datos de Observación de la Tierra.</p>
+                <button id="btn-nueva-evaluacion" class="btn btn-primary btn-large">
+                    <span class="material-symbols-rounded">add_circle</span>
+                    Nueva evaluación
+                </button>
+            </div>
+        </section>
+
+        <!-- Dynamic Content Area -->
+        <div id="dynamic-flow" class="hidden">
+            
+            <!-- SECCIÓN 2: CAPTURA -->
+            <section id="captura" class="section hidden slide-up">
+                <div class="card large-card">
+                    <div class="section-header">
+                        <span class="material-symbols-rounded icon-primary">photo_camera</span>
+                        <h3>Adquisición de Fotografía</h3>
+                    </div>
+                    <div class="image-preview-container">
+                        <img id="img-preview" src="hemispherical_canopy.png" alt="Fotografía hemisférica del cafetal" class="preview-img">
+                        <div class="overlay-target"></div>
+                    </div>
+                    <div class="action-buttons">
+                        <button id="btn-tomar-foto" class="btn btn-secondary">
+                            <span class="material-symbols-rounded">camera</span>
+                            Tomar fotografía
+                        </button>
+                        <button id="btn-seleccionar-galeria" class="btn btn-outline">
+                            <span class="material-symbols-rounded">image</span>
+                            Desde galería
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 3: UBICACIÓN -->
+            <section id="ubicacion" class="section hidden slide-up">
+                <div class="card">
+                    <div class="section-header">
+                        <span class="material-symbols-rounded icon-primary">location_on</span>
+                        <h3>Datos de Ubicación</h3>
+                    </div>
+                    <div class="location-details">
+                        <div class="gps-item">
+                            <span class="label">Latitud</span>
+                            <span class="value" id="lat-val">9.005639°</span>
+                        </div>
+                        <div class="gps-item">
+                            <span class="label">Longitud</span>
+                            <span class="value" id="lon-val">-79.587745°</span>
+                        </div>
+                        <div class="status-badge success">
+                            <span class="material-symbols-rounded">check_circle</span>
+                            Ubicación obtenida
+                        </div>
+                    </div>
+                    <div class="mini-map">
+                        <div class="map-placeholder">
+                            <span class="material-symbols-rounded pin-marker">location_on</span>
+                        </div>
+                    </div>
+                </div>
+                <button id="btn-enviar" class="btn btn-primary btn-full hidden slide-up">
+                    <span class="material-symbols-rounded">cloud_upload</span>
+                    Analizar Fotografía
+                </button>
+            </section>
+
+            <!-- SECCIÓN 4: PROCESAMIENTO -->
+            <section id="procesamiento" class="section hidden">
+                <div class="card loading-card">
+                    <div class="loader-container">
+                        <div class="circular-spinner"></div>
+                        <h3 class="loading-text">Analizando información...</h3>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-bar" id="main-progress"></div>
+                    </div>
+                    <ul class="checklist" id="processing-checklist">
+                        <li class="check-item pending" id="step-1">
+                            <span class="material-symbols-rounded status-icon">pending</span>
+                            <span class="text">Procesando imagen</span>
+                        </li>
+                        <li class="check-item pending" id="step-2">
+                            <span class="material-symbols-rounded status-icon">pending</span>
+                            <span class="text">Calculando porcentaje de sombra</span>
+                        </li>
+                        <li class="check-item pending" id="step-3">
+                            <span class="material-symbols-rounded status-icon">pending</span>
+                            <span class="text">Consultando Copernicus</span>
+                        </li>
+                        <li class="check-item pending" id="step-4">
+                            <span class="material-symbols-rounded status-icon">pending</span>
+                            <span class="text">Analizando clima</span>
+                        </li>
+                        <li class="check-item pending" id="step-5">
+                            <span class="material-symbols-rounded status-icon">pending</span>
+                            <span class="text">Ejecutando sistema experto</span>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- RESULTS CONTAINER (Shows after processing) -->
+            <div id="resultados-container" class="hidden">
+                <!-- SECCIÓN 5: RESULTADOS -->
+                <section id="resultados" class="section fade-in">
+                    <h2 class="section-title">Resultados del Análisis</h2>
+                    <div class="dashboard-grid">
+                        <div class="card kpi-card highlight-green">
+                            <span class="kpi-label">Porcentaje de Sombra</span>
+                            <span class="kpi-value" id="kpi-sombra">45%</span>
+                            <div class="traffic-light">
+                                <div class="light light-green active"></div>
+                                <div class="light light-yellow"></div>
+                                <div class="light light-red"></div>
+                            </div>
+                        </div>
+                        <div class="card kpi-card">
+                            <span class="material-symbols-rounded kpi-icon">grass</span>
+                            <span class="kpi-label">Cobertura Vegetal</span>
+                            <span class="kpi-value-small">45%</span>
+                        </div>
+                        <div class="card kpi-card">
+                            <span class="material-symbols-rounded kpi-icon">cloud</span>
+                            <span class="kpi-label">Cobertura de Cielo</span>
+                            <span class="kpi-value-small">55%</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SECCIÓN 6: VISUALIZACIÓN -->
+                <section id="visualizacion" class="section fade-in">
+                    <div class="card">
+                        <div class="section-header">
+                            <span class="material-symbols-rounded icon-primary">image_search</span>
+                            <h3>Segmentación de Imagen</h3>
+                        </div>
+                        <div class="image-comparison">
+                            <div class="image-box">
+                                <span class="badge">Original</span>
+                                <img src="hemispherical_canopy.png" alt="Fotografía original del dosel">
+                            </div>
+                            <div class="image-box">
+                                <span class="badge">Segmentada</span>
+                                <img src="segmented_canopy.png" alt="Máscara de vegetación">
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <div class="pie-chart">
+                                <!-- CSS Pie chart -->
+                            </div>
+                            <div class="chart-legend">
+                                <div class="legend-item"><span class="color-box veg"></span> Vegetación (45%)</div>
+                                <div class="legend-item"><span class="color-box sky"></span> Cielo (55%)</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SECCIÓN 7: RÉGIMEN ACTUAL -->
+                <section id="regimen-actual" class="section fade-in">
+                    <div class="card">
+                        <div class="section-header">
+                            <span class="material-symbols-rounded icon-primary">category</span>
+                            <h3>Régimen de Sombra Actual</h3>
+                        </div>
+                        <div class="category-display">
+                            <div class="category-badge medium">Sombra Media</div>
+                        </div>
+                        <p class="technical-description">
+                            Clasificación técnica basada en la cobertura vegetal (30% - 50%). Proporciona un equilibrio adecuado entre protección solar y entrada de luz para la fotosíntesis del café, favoreciendo la maduración lenta del grano y la conservación del suelo.
+                        </p>
+                    </div>
+                </section>
+
+                <!-- SECCIÓN 8: RÉGIMEN IDEAL -->
+                <section id="regimen-ideal" class="section fade-in">
+                    <div class="card premium-card">
+                        <div class="section-header">
+                            <span class="material-symbols-rounded icon-accent">auto_awesome</span>
+                            <h3>Régimen Ideal Recomendado</h3>
+                        </div>
+                        
+                        <div class="ideal-kpi-container">
+                            <div class="ideal-kpi">
+                                <span class="ideal-label">Sombra Ideal</span>
+                                <span class="ideal-value">40% - 50%</span>
+                                <span class="ideal-category">Media / Alta</span>
+                            </div>
+                        </div>
+
+                        <div class="env-variables">
+                            <h4>Variables Ambientales (Copernicus / DEM)</h4>
+                            <div class="variables-grid">
+                                <div class="var-item">
+                                    <span class="material-symbols-rounded">landscape</span>
+                                    <span class="var-name">Altitud</span>
+                                    <span class="var-val">1,250 msnm</span>
+                                </div>
+                                <div class="var-item">
+                                    <span class="material-symbols-rounded">trending_up</span>
+                                    <span class="var-name">Pendiente</span>
+                                    <span class="var-val">15%</span>
+                                </div>
+                                <div class="var-item">
+                                    <span class="material-symbols-rounded">thermostat</span>
+                                    <span class="var-name">Temperatura</span>
+                                    <span class="var-val">22 °C</span>
+                                </div>
+                                <div class="var-item">
+                                    <span class="material-symbols-rounded">water_drop</span>
+                                    <span class="var-name">Precipitación</span>
+                                    <span class="var-val">1,800 mm</span>
+                                </div>
+                                <div class="var-item">
+                                    <span class="material-symbols-rounded">sunny</span>
+                                    <span class="var-name">Radiación</span>
+                                    <span class="var-val">Media-Alta</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SECCIÓN 9: ANÁLISIS DE Brecha -->
+                <section id="analisis-brecha" class="section fade-in">
+                    <div class="card">
+                        <div class="section-header">
+                            <span class="material-symbols-rounded icon-primary">balance</span>
+                            <h3>Análisis de Brecha</h3>
+                        </div>
+                        
+                        <div class="gap-comparison">
+                            <div class="gap-side">
+                                <span class="gap-title">Sombra Actual</span>
+                                <span class="gap-number">45%</span>
+                            </div>
+                            <div class="gap-divider">VS</div>
+                            <div class="gap-side">
+                                <span class="gap-title">Sombra Ideal</span>
+                                <span class="gap-number">40-50%</span>
+                            </div>
+                        </div>
+                        
+                        <div class="gap-result adequate">
+                            <div class="result-header">
+                                <span class="material-symbols-rounded">check_circle</span>
+                                <span class="result-title">Adecuada</span>
+                            </div>
+                            <span class="result-diff">Diferencia: 0%</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SECCIÓN 10: RECOMENDACIONES -->
+                <section id="recomendaciones" class="section fade-in">
+                    <h2 class="section-title">Programa Rentabilidad Sustentable</h2>
+                    
+                    <div class="recommendations-list">
+                        <div class="rec-card">
+                            <div class="rec-icon-box bg-green">
+                                <span class="material-symbols-rounded">nature</span>
+                            </div>
+                            <div class="rec-content">
+                                <h4>Manejo de sombra</h4>
+                                <p>Mantener el nivel actual, realizar monitoreo constante en época seca.</p>
+                            </div>
+                        </div>
+                        <div class="rec-card">
+                            <div class="rec-icon-box bg-brown">
+                                <span class="material-symbols-rounded">content_cut</span>
+                            </div>
+                            <div class="rec-content">
+                                <h4>Podas selectivas</h4>
+                                <p>Realizar recepas sanitarias post-cosecha para rejuvenecimiento.</p>
+                            </div>
+                        </div>
+                        <div class="rec-card">
+                            <div class="rec-icon-box bg-light-green">
+                                <span class="material-symbols-rounded">eco</span>
+                            </div>
+                            <div class="rec-content">
+                                <h4>Especies recomendadas</h4>
+                                <p>Inga (Chalúm/Cuje) para fijación de nitrógeno y sombra regulada.</p>
+                            </div>
+                        </div>
+                        <div class="rec-card">
+                            <div class="rec-icon-box bg-blue">
+                                <span class="material-symbols-rounded">air</span>
+                            </div>
+                            <div class="rec-content">
+                                <h4>Manejo del microclima</h4>
+                                <p>Conservar barreras rompevientos en zonas de alta pendiente.</p>
+                            </div>
+                        </div>
+                        <div class="rec-card">
+                            <div class="rec-icon-box bg-red">
+                                <span class="material-symbols-rounded">coronavirus</span>
+                            </div>
+                            <div class="rec-content">
+                                <h4>Prevención de enfermedades</h4>
+                                <p>Nivel de sombra actual minimiza riesgo de brote severo de roya.</p>
+                            </div>
+                        </div>
+                        <div class="rec-card">
+                            <div class="rec-icon-box bg-yellow">
+                                <span class="material-symbols-rounded">calendar_month</span>
+                            </div>
+                            <div class="rec-content">
+                                <h4>Próxima evaluación</h4>
+                                <p>Sugerida en 6 meses (cambio de estación).</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SECCIÓN 11: MAPA -->
+                <section id="mapa" class="section fade-in">
+                    <div class="card map-card">
+                        <div class="section-header">
+                            <span class="material-symbols-rounded icon-primary">map</span>
+                            <h3>Visor Territorial</h3>
+                        </div>
+                        <div class="large-map-container">
+                            <div class="map-overlay-controls">
+                                <span class="badge">Sentinel-2 (NDVI)</span>
+                            </div>
+                            <img src="ndvi_map.png" alt="Mapa satelital NDVI de parcelas de café" class="preview-img" style="width: 100%; height: 100%; object-fit: cover;">
+                        </div>
+                        <button class="btn btn-outline btn-full mt-3">
+                            <span class="material-symbols-rounded">layers</span>
+                            Ver capas (Sentinel-2, DEM)
+                        </button>
+                    </div>
+                </section>
+
+                <!-- SECCIÓN 12: HISTORIAL -->
+                <section id="historial" class="section fade-in">
+                    <h2 class="section-title">Historial de Evaluaciones</h2>
+                    <div class="history-list">
+                        <div class="card history-card">
+                            <div class="history-date">
+                                <span class="material-symbols-rounded">event</span> 25 Jun 2026
+                            </div>
+                            <div class="history-details">
+                                <span class="badge success">45% (Media)</span>
+                                <button class="btn-text">Ver evaluación</button>
+                            </div>
+                        </div>
+                        <div class="card history-card">
+                            <div class="history-date">
+                                <span class="material-symbols-rounded">event</span> 10 Dic 2025
+                            </div>
+                            <div class="history-details">
+                                <span class="badge warning">65% (Alta)</span>
+                                <button class="btn-text">Ver evaluación</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </div> <!-- END RESULTS CONTAINER -->
+
+        </div> <!-- END DYNAMIC FLOW -->
+
+        <!-- SECCIÓN 13: FOOTER -->
+        <footer id="footer" class="section fade-in">
+            <div class="footer-content">
+                <p class="version">Versión MVP</p>
+                <p class="credits-title">Proyecto desarrollado para:</p>
+                <ul class="credits-list">
+                    <li>Curso AFOLU II</li>
+                    <li>Copernicus LAC</li>
+                    <li>ANACAFÉ</li>
+                </ul>
+                <div class="footer-logos">
+                    <span class="footer-badge">Google Earth Engine</span>
+                    <span class="footer-badge">Copernicus Programme</span>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
